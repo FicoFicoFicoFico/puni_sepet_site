@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#171717">
+
+    <title>Punišepet</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"
+    >
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="site">
+
+    <!-- Background slideshow -->
+    <div class="slide active"></div>
+    <div class="slide"></div>
+    <div class="slide"></div>
+    <div class="slide"></div>
+    <div class="slide"></div>
+
+    <!-- Background overlays -->
+    <div class="overlay"></div>
+    <div class="contact-backdrop"></div>
+
+
+    <!-- Homepage -->
+    <main>
+
+        <section class="home-content">
+
+            <!-- Main logo -->
+            <div class="hero-logo">
+                <img
+                        src="images/logo_white.png"
+                        alt="Punišepet"
+                >
+            </div>
+
+            <!-- Subtitle -->
+            <p class="subtitle">
+                Strast prema vinu. Predanost kvaliteti.
+            </p>
+
+            <!-- Contact button -->
+            <button
+                    class="nav-link hero-contact"
+                    id="contactButton"
+                    type="button"
+                    aria-controls="contactPopup"
+                    aria-expanded="false"
+            >
+                Kontakt
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- Contact popup -->
+    <section
+            class="contact-content"
+            id="contactPopup"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="contactTitle"
+            aria-hidden="true"
+            tabindex="-1"
+            inert
+    >
+
+        <!-- Close button -->
+        <button
+                class="contact-close"
+                id="contactClose"
+                type="button"
+                aria-label="Close contact popup"
+        >
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+
+        <h1 id="contactTitle">Kontakt info</h1>
+
+        <!-- Contact information -->
+        <div class="contact-details">
+
+            <p>
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                    punisepet@punisepet.com
+            </p>
+
+            <p>
+                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                    +385 99 123 4567
+            </p>
+
+            <p>
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                Zagreb, Croatia
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Slideshow controls -->
+    <div class="slideshow-controls" aria-label="Slideshow navigation">
+
+        <button
+                class="slide-dot active"
+                type="button"
+                aria-label="Show slide 1"
+        ></button>
+
+        <button
+                class="slide-dot"
+                type="button"
+                aria-label="Show slide 2"
+        ></button>
+
+        <button
+                class="slide-dot"
+                type="button"
+                aria-label="Show slide 3"
+        ></button>
+
+        <button class="slide-dot" type="button" aria-label="Show slide 4"></button>
+        <button class="slide-dot" type="button" aria-label="Show slide 5"></button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // Slideshow
+
+    const slides = document.querySelectorAll(".slide");
+    const dots = document.querySelectorAll(".slide-dot");
+
+    const slideInterval = 5500;
+
+    let currentSlide = 0;
+    let slideshowTimer;
+
+
+    function showSlide(index) {
+
+        slides[currentSlide].classList.remove("active");
+        dots[currentSlide].classList.remove("active");
+
+        currentSlide = index;
+
+        slides[currentSlide].classList.add("active");
+        dots[currentSlide].classList.add("active");
+
+    }
+
+
+    function nextSlide() {
+
+        const next = (currentSlide + 1) % slides.length;
+
+        showSlide(next);
+
+    }
+
+
+    function startSlideshow() {
+
+        clearInterval(slideshowTimer);
+
+        slideshowTimer = setInterval(nextSlide, slideInterval);
+
+    }
+
+
+    // Manual slideshow navigation
+
+    dots.forEach((dot, index) => {
+
+        dot.addEventListener("click", () => {
+
+            showSlide(index);
+            startSlideshow();
+
+        });
+
+    });
+
+
+    startSlideshow();
+
+
+    // Contact popup
+
+    const contactButton = document.getElementById("contactButton");
+    const contactClose = document.getElementById("contactClose");
+    const contactPopup = document.getElementById("contactPopup");
+    const contactBackdrop = document.querySelector(".contact-backdrop");
+    const siteMain = document.querySelector("main");
+    const slideshowControls = document.querySelector(".slideshow-controls");
+
+    let previousFocus = null;
+
+
+    function openContact() {
+
+        previousFocus = document.activeElement;
+
+        contactPopup.inert = false;
+        contactPopup.setAttribute("aria-hidden", "false");
+
+        document.body.classList.add("contact-open");
+        contactButton.setAttribute("aria-expanded", "true");
+
+        siteMain.inert = true;
+        slideshowControls.inert = true;
+
+        contactClose.focus();
+
+    }
+
+
+    function closeContact() {
+
+        document.body.classList.remove("contact-open");
+
+        siteMain.inert = false;
+        slideshowControls.inert = false;
+
+        contactButton.setAttribute("aria-expanded", "false");
+
+        contactPopup.inert = true;
+        contactPopup.setAttribute("aria-hidden", "true");
+
+        if (previousFocus && previousFocus.isConnected) {
+            previousFocus.focus();
+        }
+
+    }
+
+
+    // Open contact popup
+
+    contactButton.addEventListener("click", openContact);
+
+
+    // Close contact popup
+
+    contactClose.addEventListener("click", closeContact);
+
+
+    // Close when clicking outside
+
+    contactBackdrop.addEventListener("click", closeContact);
+
+
+    // Keyboard controls
+
+    document.addEventListener("keydown", (event) => {
+
+        if (!document.body.classList.contains("contact-open")) {
+            return;
+        }
+
+        if (event.key === "Escape") {
+
+            closeContact();
+            return;
+
+        }
+
+        if (event.key === "Tab") {
+
+            const focusableElements = [
+                ...contactPopup.querySelectorAll(
+                    "button:not([disabled]), a[href]"
+                )
+            ];
+
+            const first = focusableElements[0];
+            const last = focusableElements[focusableElements.length - 1];
+
+            if (!first || !last) {
+                event.preventDefault();
+                contactPopup.focus();
+                return;
+            }
+
+            if (
+                event.shiftKey &&
+                document.activeElement === first
+            ) {
+
+                event.preventDefault();
+                last.focus();
+
+            } else if (
+                !event.shiftKey &&
+                document.activeElement === last
+            ) {
+
+                event.preventDefault();
+                first.focus();
+
+            }
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
