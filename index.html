@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hr">
 
 <head>
     <meta charset="UTF-8">
@@ -8,10 +8,12 @@
     <meta name="theme-color" content="#171717">
 
     <title>Puni Sepet</title>
+
     <link rel="icon" type="image/png" href="favicon.png">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="style.css">
+
     <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"
@@ -21,7 +23,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap"
+            rel="stylesheet"
+    >
 
 </head>
 
@@ -35,6 +40,8 @@
     <div class="slide"></div>
     <div class="slide"></div>
     <div class="slide"></div>
+    <div class="slide"></div>
+
 
     <!-- Background overlays -->
     <div class="overlay"></div>
@@ -92,7 +99,7 @@
                 class="contact-close"
                 id="contactClose"
                 type="button"
-                aria-label="Close contact popup"
+                aria-label="Zatvori kontakt"
         >
             <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
@@ -103,23 +110,23 @@
         <div class="contact-details">
 
             <p>
-                <i class="fa-solid fa-paper-plane"></i>
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
                     office@punisepet.hr
             </p>
 
             <p>
-                <i class="fa-solid fa-phone-flip"></i>
+                <i class="fa-solid fa-phone-flip" aria-hidden="true"></i>
                     +385 91 7615 725
             </p>
 
             <p>
-                <i class="fa-solid fa-phone"></i>
-                +385 97 7379 260
+                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                    +385 97 7379 260
             </p>
 
             <p>
                 <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                Zagreb, Croatia
+                Zagreb, Hrvatska
             </p>
 
         </div>
@@ -127,82 +134,47 @@
     </section>
 
 
-    <!-- Slideshow controls -->
-    <div class="slideshow-controls" aria-label="Slideshow navigation">
-
-        <button
-                class="slide-dot active"
-                type="button"
-                aria-label="Show slide 1"
-        ></button>
-
-        <button
-                class="slide-dot"
-                type="button"
-                aria-label="Show slide 2"
-        ></button>
-
-        <button
-                class="slide-dot"
-                type="button"
-                aria-label="Show slide 3"
-        ></button>
-
-        <button class="slide-dot" type="button" aria-label="Show slide 4"></button>
-        <button class="slide-dot" type="button" aria-label="Show slide 5"></button>
-
-    </div>
+    <!-- Slideshow navigation -->
+    <div
+            class="slideshow-controls"
+            role="group"
+            aria-label="Navigacija kroz fotografije"
+    ></div>
 
 </div>
 
 
 <script>
 
-    // Slideshow
+    // Slideshow settings
 
     const slides = document.querySelectorAll(".slide");
-    const dots = document.querySelectorAll(".slide-dot");
+    const controls = document.querySelector(".slideshow-controls");
 
     const slideInterval = 5500;
 
     let currentSlide = 0;
-    let slideshowTimer;
+    let slideshowTimer = null;
 
 
-    function showSlide(index) {
+    // Generate navigation dots automatically
 
-        slides[currentSlide].classList.remove("active");
-        dots[currentSlide].classList.remove("active");
+    slides.forEach((slide, index) => {
 
-        currentSlide = index;
+        const dot = document.createElement("button");
 
-        slides[currentSlide].classList.add("active");
-        dots[currentSlide].classList.add("active");
+        dot.className = "slide-dot";
+        dot.type = "button";
 
-    }
+        dot.setAttribute(
+            "aria-label",
+            `Prikaži fotografiju ${index + 1}`
+        );
 
-
-    function nextSlide() {
-
-        const next = (currentSlide + 1) % slides.length;
-
-        showSlide(next);
-
-    }
-
-
-    function startSlideshow() {
-
-        clearInterval(slideshowTimer);
-
-        slideshowTimer = setInterval(nextSlide, slideInterval);
-
-    }
-
-
-    // Manual slideshow navigation
-
-    dots.forEach((dot, index) => {
+        if (index === 0) {
+            dot.classList.add("active");
+            dot.setAttribute("aria-current", "true");
+        }
 
         dot.addEventListener("click", () => {
 
@@ -211,13 +183,73 @@
 
         });
 
+        controls.appendChild(dot);
+
     });
 
+    const dots = controls.querySelectorAll(".slide-dot");
+
+
+    // Change slide
+
+    function showSlide(index) {
+
+        if (index < 0 || index >= slides.length) {
+            return;
+        }
+
+        slides[currentSlide].classList.remove("active");
+        dots[currentSlide].classList.remove("active");
+        dots[currentSlide].removeAttribute("aria-current");
+
+        currentSlide = index;
+
+        slides[currentSlide].classList.add("active");
+        dots[currentSlide].classList.add("active");
+        dots[currentSlide].setAttribute("aria-current", "true");
+
+    }
+
+
+    // Next slide
+
+    function nextSlide() {
+
+        if (slides.length === 0) {
+            return;
+        }
+
+        const next = (currentSlide + 1) % slides.length;
+
+        showSlide(next);
+
+    }
+
+
+    // Start automatic slideshow
+
+    function startSlideshow() {
+
+        clearInterval(slideshowTimer);
+
+        if (slides.length > 1) {
+
+            slideshowTimer = setInterval(
+                nextSlide,
+                slideInterval
+            );
+
+        }
+
+    }
+
+
+    // Start slideshow
 
     startSlideshow();
 
 
-    // Contact popup
+    // Contact popup elements
 
     const contactButton = document.getElementById("contactButton");
     const contactClose = document.getElementById("contactClose");
@@ -229,7 +261,13 @@
     let previousFocus = null;
 
 
+    // Open contact popup
+
     function openContact() {
+
+        if (document.body.classList.contains("contact-open")) {
+            return;
+        }
 
         previousFocus = document.activeElement;
 
@@ -247,7 +285,13 @@
     }
 
 
+    // Close contact popup
+
     function closeContact() {
+
+        if (!document.body.classList.contains("contact-open")) {
+            return;
+        }
 
         document.body.classList.remove("contact-open");
 
@@ -266,22 +310,22 @@
     }
 
 
-    // Open contact popup
+    // Open popup on button click
 
     contactButton.addEventListener("click", openContact);
 
 
-    // Close contact popup
+    // Close popup on close button click
 
     contactClose.addEventListener("click", closeContact);
 
 
-    // Close when clicking outside
+    // Close popup when clicking outside
 
     contactBackdrop.addEventListener("click", closeContact);
 
 
-    // Keyboard controls
+    // Keyboard accessibility
 
     document.addEventListener("keydown", (event) => {
 
@@ -289,12 +333,16 @@
             return;
         }
 
+        // Escape closes popup
+
         if (event.key === "Escape") {
 
             closeContact();
             return;
 
         }
+
+        // Keep keyboard focus inside popup
 
         if (event.key === "Tab") {
 
@@ -308,9 +356,11 @@
             const last = focusableElements[focusableElements.length - 1];
 
             if (!first || !last) {
+
                 event.preventDefault();
                 contactPopup.focus();
                 return;
+
             }
 
             if (

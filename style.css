@@ -73,27 +73,32 @@ a {
 /* Slideshow images */
 
 .slide:nth-child(1) {
-    background-image: url("images/slika_1.jpg");
+    background-image: url("images/slika_1.webp");
     background-color: #455b67;
 }
 
 .slide:nth-child(2) {
-    background-image: url("images/slika_2.jpg");
+    background-image: url("images/slika_2.webp");
     background-color: #55615c;
 }
 
 .slide:nth-child(3) {
-    background-image: url("images/slika_3.jpg");
+    background-image: url("images/slika_3.webp");
     background-color: #545d54;
 }
 
 .slide:nth-child(4) {
-    background-image: url("images/slika_4.jpg");
+    background-image: url("images/slika_4.webp");
     background-color: #545d54;
 }
 
 .slide:nth-child(5) {
-    background-image: url("images/slika_5.jpg");
+    background-image: url("images/slika_5.webp");
+    background-color: #545d54;
+}
+
+.slide:nth-child(6) {
+    background-image: url("images/slika_6.webp");
     background-color: #545d54;
 }
 
